@@ -1,0 +1,88 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <!-- <link rel="stylesheet" href="css/styles.css"> -->
+  <meta charset="UTF-8">
+  <title>Dashboard | PRS</title>
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <style>
+    * {
+      box-sizing: border-box;
+    }
+
+    body {
+      font-family: Trebuchet, sans-serif;
+      background: #d5e1e6;
+      margin: 0;
+      padding: 0;
+    }
+
+    header {
+      background: #00b1a2;
+      color: white;
+      padding: 1rem 2rem;
+      text-align: center;
+      font-size: 1.5rem;
+    }
+
+    .dashboard-container {
+      padding: 2rem;
+      max-width: 1000px;
+      margin: auto;
+    }
+
+    h2 {
+      text-align: center;
+      color: #2d4257;
+      margin-bottom: 2rem;
+    }
+
+    .chart-wrapper {
+      margin-bottom: 3rem;
+      background: white;
+      padding: 1rem;
+      border-radius: 10px;
+      box-shadow: 0 0 10px rgba(0, 0, 0, 0.05);
+    }
+
+    canvas {
+      max-width: 100%;
+      height: auto;
+    }
+
+    @media (max-width: 768px) {
+      .dashboard-container {
+        padding: 1rem;
+      }
+    }
+  </style>
+</head>
+<body>
+
+  <header>
+    PRS Dashboard
+  </header>
+
+  <div class="dashboard-container">
+    <h2>Vaccination Insights</h2>
+
+    <div class="chart-wrapper">
+      <h3>Vaccinations per User</h3>
+      <canvas id="barChart"></canvas>
+    </div>
+
+    <div class="chart-wrapper">
+      <h3>Vaccine Type Distribution</h3>
+      <canvas id="pieChart"></canvas>
+    </div>
+
+    <div class="chart-wrapper">
+      <h3>Vaccination Trends Over Time</h3>
+      <canvas id="lineChart"></canvas>
+    </div>
+  </div>
+
+  <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+  <script src="js/scripts.js"></script>
+</body>
+</html>
