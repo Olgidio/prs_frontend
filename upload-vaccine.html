@@ -1,0 +1,22 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <title>Upload Vaccination Record | PRS</title>
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <link rel="stylesheet" href="css/styles.css" />
+</head>
+<body>
+<div id="navbar"></div>
+  <div class="upload-container">
+    <h2>Upload Vaccination Record</h2>
+    <p class="upload-instructions">Upload your FHIR JSON vaccination file:</p>
+    <input type="file" id="vaccineFile" accept=".json" />
+    <button class="upload-btn" id="uploadVaccineBtn">Upload</button>
+    <div id="uploadMessage" class="upload-message"></div>
+  </div>
+
+  <script src="js/scripts.js"></script>
+  <div id="footer"></div>
+</body>
+</html>

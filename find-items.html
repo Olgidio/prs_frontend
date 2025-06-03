@@ -1,0 +1,31 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <title>Find Critical Items | PRS</title>
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <link rel="stylesheet" href="css/styles.css" />
+</head>
+<body>
+  <div id="navbar"></div>
+  <div class="header">
+    <span>Find Critical Supplies</span>
+    <button class="login-btn" onclick="window.location.href='login.html'">Logout</button>
+  </div>
+
+  <div class="dashboard-container">
+    <h2>Check Item Availability Near You</h2>
+
+    <div class="item-search">
+      <input type="text" id="searchInput" placeholder="Search item (e.g., masks, sanitizer)" />
+      <button class="search-btn" id="searchBtn">Search</button>
+    </div>
+
+    <div class="item-results" id="itemResults">
+      <!-- Item results will appear here -->
+    </div>
+  </div>
+  <div id="footer"></div>
+  <script src="js/scripts.js"></script>
+</body>
+</html>

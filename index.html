@@ -1,11 +1,11 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
-  <!-- <link rel="stylesheet" href="css/styles.css"> -->
+  <link rel="stylesheet" href="css/styles.css">
   <meta charset="UTF-8">
   <title>Dashboard | PRS</title>
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <style>
+  <!-- <style>
     * {
       box-sizing: border-box;
     }
@@ -55,15 +55,16 @@
         padding: 1rem;
       }
     }
-  </style>
+  </style> -->
 </head>
 <body>
+  <div id="navbar"></div>
+  <div class="header">
+    <span>PRS Dashboard</span>
+    <button class="login-btn" onclick="window.location.href='login.html'">Login</button>
+  </div>
 
-  <header>
-    PRS Dashboard
-  </header>
-
-  <div class="dashboard-container">
+ <div class="dashboard-container">
     <h2>Vaccination Insights</h2>
 
     <div class="chart-wrapper">
@@ -83,6 +84,6 @@
   </div>
 
   <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+  <div id="footer"></div>
   <script src="js/scripts.js"></script>
 </body>
-</html>

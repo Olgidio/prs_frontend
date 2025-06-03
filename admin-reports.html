@@ -1,0 +1,39 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <title>Admin Reports | PRS</title>
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <link rel="stylesheet" href="css/styles.css" />
+</head>
+<body>
+<div id="navbar"></div>
+  <div class="header">
+    <span>Admin Reports</span>
+    <button class="login-btn" onclick="window.location.href='login.html'">Logout</button>
+  </div>
+
+  <div class="dashboard-container">
+    <h2>Audit Logs & Summary</h2>
+
+    <div class="report-section">
+      <h3>System Access Summary</h3>
+      <table class="report-table">
+        <thead>
+          <tr>
+            <th>User</th>
+            <th>Role</th>
+            <th>Action</th>
+            <th>Timestamp</th>
+          </tr>
+        </thead>
+        <tbody id="reportTableBody">
+          <!-- Rows will be added by JS -->
+        </tbody>
+      </table>
+    </div>
+  </div>
+<div id="footer"></div>
+  <script src="js/scripts.js"></script>
+</body>
+</html>

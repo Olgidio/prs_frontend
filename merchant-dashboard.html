@@ -1,0 +1,39 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <title>Merchant Dashboard | PRS</title>
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <link rel="stylesheet" href="css/styles.css" />
+</head>
+<body>
+<div id="navbar"></div>
+  <div class="header">
+    <span>Merchant Dashboard</span>
+    <button class="login-btn" onclick="window.location.href='login.html'">Logout</button>
+  </div>
+
+  <div class="dashboard-container">
+    <h2>Inventory and Vaccine Supply Insights</h2>
+
+    <div class="chart-wrapper">
+      <h3>Items in Stock</h3>
+      <canvas id="barChart"></canvas>
+    </div>
+
+    <div class="chart-wrapper">
+      <h3>Item Type Distribution</h3>
+      <canvas id="pieChart"></canvas>
+    </div>
+
+    <div class="chart-wrapper">
+      <h3>Inventory Trend</h3>
+      <canvas id="lineChart"></canvas>
+    </div>
+  </div>
+
+  <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+  <div id="footer"></div>
+  <script src="js/scripts.js"></script>
+</body>
+</html>
