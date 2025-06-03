@@ -1,3 +1,9 @@
+const BACKEND_URL = 'https://datadrivenassignment-production.up.railway.app/api';
+const token = localStorage.getItem("token");
+const headers = {
+  'Authorization': `Bearer ${token}`,
+  'Content-Type': 'application/json'
+};
 document.addEventListener("DOMContentLoaded", function () {
   console.log("Viewport width:", window.innerWidth);
   console.log("Viewport height:", window.innerHeight);
