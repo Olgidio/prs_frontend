@@ -5,7 +5,7 @@ const headers = {
   'Content-Type': 'application/json'
 };
 
-// Public Dashboard Data Fetcher
+
 async function loadPublicDashboard() {
   try {
     const res = await fetch(`${BACKEND_URL}/vaccinations/summary/public`, { headers });
