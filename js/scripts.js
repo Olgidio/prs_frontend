@@ -204,6 +204,7 @@ if (registerForm) {
     const mobile_phone = document.getElementById("mobile_phone").value.trim();
     const password = document.getElementById("password").value;
     const confirm_password = document.getElementById("confirm_password").value;
+    const home_address = document.getElementById("home_address").value.trim();
 
     if (password !== confirm_password) {
       alert("Passwords do not match.");
@@ -212,13 +213,15 @@ if (registerForm) {
 
     const body = {
       first_name,
-      middle_name: middle_name || null,
+      middle_name,
       last_name,
       email,
+      password,
       mobile_phone,
-      password, // hashed server-side
-      role_id: 3 // assuming 3 = public role; adjust as needed
+      home_address,
+      desired_role: "Public" // or set dynamically
     };
+
 
     try {
       const res = await fetch(`${BACKEND_URL}/auth/register`, {
