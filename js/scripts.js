@@ -161,10 +161,20 @@ document.addEventListener("DOMContentLoaded", function () {
   const dashboardRedirect = document.getElementById("dashboardRedirect");
 
   if (roleLabel && dashboardRedirect) {
-    const role = localStorage.getItem("role") || "public";
+    const token = localStorage.getItem("token");
+    const role = localStorage.getItem("role");
+
+    if (!token || !role) {
+      // Not logged in — redirect to login page
+      window.location.href = "login.html";
+      return;
+    }
+
+    // If logged in, set role and redirect button
     roleLabel.textContent = `Role: ${role.charAt(0).toUpperCase() + role.slice(1)}`;
     dashboardRedirect.onclick = () => window.location.href = `${role}-dashboard.html`;
   }
+
 
   if (document.title.includes("Public Dashboard")) loadPublicDashboard();
   if (document.title.includes("Merchant Dashboard")) loadMerchantDashboard();
