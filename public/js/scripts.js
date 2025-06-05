@@ -1,4 +1,5 @@
-const BACKEND_URL = 'http://13.60.128.113:3000';
+const BACKEND_URL = 'https://api.prs-api.xyz';
+
 const token = localStorage.getItem("token");
 const headers = {
   'Authorization': `Bearer ${token}`,
