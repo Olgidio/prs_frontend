@@ -13,6 +13,22 @@ function logoutUser() {
   window.location.href = "login.html";
 }
 
+function redirectToDashboard(role) {
+  switch (role) {
+    case "Public":
+      window.location.href = "public-dashboard.html";
+      break;
+    case "Merchant":
+      window.location.href = "merchant-dashboard.html";
+      break;
+    case "Government Official":
+      window.location.href = "gov-dashboard.html";
+      break;
+    default:
+      window.location.href = "login.html";
+  }
+}
+
 async function loadPublicDashboard() {
   try {
     const res = await fetch(`${BACKEND_URL}/api/vaccinations/summary/public`, {
@@ -74,7 +90,6 @@ async function loadPublicDashboard() {
       `<p style="color:red">Error loading vaccination data. Please try again later.</p>`);
   }
 }
-
 async function loadMerchantDashboard() {
   const res = await fetch(`${BACKEND_URL}/api/inventory/summary`, {
     headers: getAuthHeaders()
@@ -122,7 +137,6 @@ async function loadGovDashboard() {
     }
   });
 }
-
 async function loadAuditLogs() {
   const res = await fetch(`${BACKEND_URL}/api/audit/logs`, {
     headers: getAuthHeaders()
@@ -160,21 +174,12 @@ document.addEventListener("DOMContentLoaded", function () {
 
   if (document.getElementById("navbar")) loadPartial("navbar", "components/navbar.html");
   if (document.getElementById("footer")) loadPartial("footer", "components/footer.html");
-  const role = localStorage.getItem("role");
 
-    if (currentPage === "user-profile.html") {
-      const role = localStorage.getItem("role");
+  if (currentPage === "user-profile.html") {
+    const role = localStorage.getItem("role");
+    redirectToDashboard(role);
+  }
 
-      if (role === "Public") {
-        window.location.href = "public-dashboard.html";
-      } else if (role === "Merchant") {
-        window.location.href = "merchant-dashboard.html";
-      } else if (role === "Government Official") {
-        window.location.href = "gov-dashboard.html";
-      } else {
-        window.location.href = "login.html";
-      }
-    }
   const logoutBtn = document.getElementById("logoutBtn");
   const navbarLogout = document.getElementById("navbarLogout");
 
@@ -196,47 +201,28 @@ document.addEventListener("DOMContentLoaded", function () {
 function loadPartial(id, file) {
   fetch(file)
     .then(res => res.text())
-    .then(html => document.getElementById(id).innerHTML = html);
-}
+    .then(html => {
+      document.getElementById(id).innerHTML = html;
 
-const fileInput = document.getElementById("vaccineFile");
-const uploadBtn = document.getElementById("uploadVaccineBtn");
-const messageBox = document.getElementById("uploadMessage");
-
-if (fileInput && uploadBtn && messageBox) {
-  uploadBtn.addEventListener("click", async () => {
-    const file = fileInput.files[0];
-    if (!file) {
-      messageBox.textContent = "Please select a file first.";
-      return;
-    }
-    if (file.type !== "application/json") {
-      messageBox.textContent = "Invalid file type. Only .json files are allowed.";
-      return;
-    }
-
-    const reader = new FileReader();
-    reader.onload = async function () {
-      try {
-        const content = JSON.parse(reader.result);
-        const res = await fetch(`${BACKEND_URL}/api/vaccinations/upload`, {
-          method: 'POST',
-          headers: getAuthHeaders(),
-          body: JSON.stringify(content)
+      // Dashboard redirection in navbar
+      const dashboardBtn = document.getElementById("dashboardRedirect");
+      if (dashboardBtn) {
+        dashboardBtn.addEventListener("click", () => {
+          const role = localStorage.getItem("role");
+          redirectToDashboard(role);
         });
-        if (!res.ok) throw new Error("Upload failed");
-        messageBox.textContent = "Vaccination record uploaded successfully!";
-        messageBox.style.color = "green";
-        fileInput.value = "";
-      } catch (err) {
-        messageBox.textContent = "Upload failed: " + err.message;
-        messageBox.style.color = "red";
       }
-    };
-    reader.readAsText(file);
-  });
 
-   const loginForm = document.getElementById("loginForm");
+      // Re-bind logout
+      const logoutBtn = document.getElementById("logoutBtn");
+      const navbarLogout = document.getElementById("navbarLogout");
+      if (logoutBtn) logoutBtn.addEventListener("click", logoutUser);
+      if (navbarLogout) navbarLogout.addEventListener("click", logoutUser);
+    });
+}
+  
+
+  const loginForm = document.getElementById("loginForm");
   if (loginForm) {
     loginForm.addEventListener("submit", async function (e) {
       e.preventDefault();
@@ -261,7 +247,7 @@ if (fileInput && uploadBtn && messageBox) {
       }
     });
   }
-}
+
 
 const registerForm = document.getElementById("registerForm");
 if (registerForm) {
