@@ -1,4 +1,4 @@
-const BACKEND_URL = 'https://datadrivenassignment-production.up.railway.app/api';
+const BACKEND_URL = 'http://16.171.34.38:3000';
 const token = localStorage.getItem("token");
 const headers = {
   'Authorization': `Bearer ${token}`,
