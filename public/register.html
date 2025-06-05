@@ -21,6 +21,14 @@
       <input type="password" id="password" placeholder="Password" required>
       <input type="password" id="confirm_password" placeholder="Confirm Password" required>
       <input type="text" id="home_address" placeholder="Home Address" required>
+      <label for="desired_role">Register As:</label>
+      <select id="desired_role" required>
+        <option value="" disabled selected>Select Role</option>
+        <option value="Public">Public</option>
+        <option value="Merchant">Merchant</option>
+        <option value="Government">Government</option>
+      </select>
+
       <button type="submit">Register</button>
     </form>
     <p>Already have an account? <a href="login.html">Login here</a></p>

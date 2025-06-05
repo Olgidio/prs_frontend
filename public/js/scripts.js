@@ -211,6 +211,10 @@ if (registerForm) {
       alert("Passwords do not match.");
       return;
     }
+    if (!document.getElementById("desired_role").value) {
+      alert("Please select a role.");
+      return;
+      }
 
     const body = {
       first_name,
@@ -220,7 +224,7 @@ if (registerForm) {
       password,
       mobile_phone,
       home_address,
-      desired_role: "Public" // or set dynamically
+      desired_role
     };
 
 
@@ -248,6 +252,32 @@ if (registerForm) {
         console.error(err);
       }
 
+  });
+}
+const loginForm = document.getElementById("loginForm");
+
+if (loginForm) {
+  loginForm.addEventListener("submit", async function (e) {
+    e.preventDefault();
+    const email = document.getElementById("email").value;
+    const password = document.getElementById("password").value;
+
+    const res = await fetch(`${BACKEND_URL}/api/auth/login`, {
+      method: "POST",
+      headers: { "Content-Type": "application/json" },
+      body: JSON.stringify({ email, password }),
+    });
+
+    const data = await res.json();
+    console.log("Login response:", data);
+
+    if (data.token && data.role) {
+      localStorage.setItem("token", data.token);
+      localStorage.setItem("role", data.role);
+      window.location.href = "user-profile.html";
+    } else {
+      alert(data.error || "Login failed");
+    }
   });
 }
 
