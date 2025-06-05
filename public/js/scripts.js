@@ -160,7 +160,21 @@ document.addEventListener("DOMContentLoaded", function () {
 
   if (document.getElementById("navbar")) loadPartial("navbar", "components/navbar.html");
   if (document.getElementById("footer")) loadPartial("footer", "components/footer.html");
+  const role = localStorage.getItem("role");
 
+    if (currentPage === "user-profile.html") {
+      const role = localStorage.getItem("role");
+
+      if (role === "Public") {
+        window.location.href = "public-dashboard.html";
+      } else if (role === "Merchant") {
+        window.location.href = "merchant-dashboard.html";
+      } else if (role === "Government Official") {
+        window.location.href = "gov-dashboard.html";
+      } else {
+        window.location.href = "login.html";
+      }
+    }
   const logoutBtn = document.getElementById("logoutBtn");
   const navbarLogout = document.getElementById("navbarLogout");
 
@@ -221,6 +235,32 @@ if (fileInput && uploadBtn && messageBox) {
     };
     reader.readAsText(file);
   });
+
+   const loginForm = document.getElementById("loginForm");
+  if (loginForm) {
+    loginForm.addEventListener("submit", async function (e) {
+      e.preventDefault();
+
+      const email = document.getElementById("email").value;
+      const password = document.getElementById("password").value;
+
+      const response = await fetch('https://api.prs-api.xyz/api/auth/login', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({ email, password })
+      });
+
+      const data = await response.json();
+
+      if (response.ok && data.token && data.role) {
+        localStorage.setItem('token', data.token);
+        localStorage.setItem('role', data.role);
+        window.location.href = 'user-profile.html';
+      } else {
+        alert(data.message || "Login failed");
+      }
+    });
+  }
 }
 
 const registerForm = document.getElementById("registerForm");
