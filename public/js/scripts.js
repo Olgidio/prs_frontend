@@ -224,26 +224,30 @@ if (registerForm) {
     };
 
 
-    try {
-      const res = await fetch(`${BACKEND_URL}/auth/register`, {
-        method: "POST",
-        headers: {
-          "Content-Type": "application/json"
-        },
-        body: JSON.stringify(body)
-      });
+      try {
+        const res = await fetch(`${BACKEND_URL}/auth/register`, {
+          method: "POST",
+          headers: {
+            "Content-Type": "application/json"
+          },
+          body: JSON.stringify(body)
+        });
 
-      const data = await res.json();
-      if (res.ok) {
-        alert("Registration successful!");
-        window.location.href = "login.html";
-      } else {
-        alert(data.error || "Registration failed.");
+        const text = await res.text(); // parse raw text first
+        console.log("Raw response:", text);
+
+        const data = JSON.parse(text); // then try parsing if you're sure it's JSON
+        if (res.ok) {
+          alert("Registration successful!");
+          window.location.href = "login.html";
+        } else {
+          alert(data.error || "Registration failed.");
+        }
+      } catch (err) {
+        alert("Server error. Please try again later.");
+        console.error(err);
       }
-    } catch (err) {
-      alert("Server error. Please try again later.");
-      console.error(err);
-    }
+
   });
 }
 
