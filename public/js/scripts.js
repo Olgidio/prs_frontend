@@ -9,7 +9,7 @@ const headers = {
 
 async function loadPublicDashboard() {
   try {
-    const res = await fetch(`${BACKEND_URL}/vaccinations/summary/public`, { headers });
+    const res = await fetch(`${BACKEND_URL}/api/api/vaccinations/summary/public`, { headers });
     const data = await res.json();
 
     const doses = data.map(v => v.dose_number);
@@ -80,7 +80,7 @@ async function loadPublicDashboard() {
 }
 
 async function loadMerchantDashboard() {
-  const res = await fetch(`${BACKEND_URL}/inventory/summary`, { headers });
+  const res = await fetch(`${BACKEND_URL}/api/api/inventory/summary`, { headers });
   const data = await res.json();
 
   const labels = data.map(i => `${i.item_type} - ${i.item_subtype}`);
@@ -96,7 +96,7 @@ async function loadMerchantDashboard() {
 }
 
 async function loadGovDashboard() {
-  const res = await fetch(`${BACKEND_URL}/gov/dashboard-summary`, { headers });
+  const res = await fetch(`${BACKEND_URL}/api/api/gov/dashboard-summary`, { headers });
   const stats = await res.json();
 
   new Chart(document.getElementById('barChart'), {
@@ -125,7 +125,7 @@ async function loadGovDashboard() {
 }
 
 async function loadAuditLogs() {
-  const res = await fetch(`${BACKEND_URL}/audit/logs`, { headers });
+  const res = await fetch(`${BACKEND_URL}/api/api/audit/logs`, { headers });
   const logs = await res.json();
 
   const tableBody = document.getElementById("reportTableBody");
@@ -147,7 +147,7 @@ const searchBtn = document.getElementById('searchBtn');
 if (searchBtn) {
   searchBtn.addEventListener('click', async () => {
     const keyword = document.getElementById('searchInput').value;
-    const res = await fetch(`${BACKEND_URL}/inventory/search?query=${encodeURIComponent(keyword)}`, { headers });
+    const res = await fetch(`${BACKEND_URL}/api/api/inventory/search?query=${encodeURIComponent(keyword)}`, { headers });
     const results = await res.json();
 
     const resultsContainer = document.getElementById("itemResults");
@@ -225,7 +225,7 @@ if (registerForm) {
 
 
       try {
-        const res = await fetch(`${BACKEND_URL}/auth/register`, {
+        const res = await fetch(`${BACKEND_URL}/api/api/api/auth/register`, {
           method: "POST",
           headers: {
             "Content-Type": "application/json"
@@ -273,7 +273,7 @@ if (fileInput && uploadBtn && messageBox) {
     reader.onload = async function () {
       try {
         const content = JSON.parse(reader.result);
-        const res = await fetch(`${BACKEND_URL}/vaccinations/upload`, {
+        const res = await fetch(`${BACKEND_URL}/api/api/api/vaccinations/upload`, {
           method: 'POST',
           headers,
           body: JSON.stringify(content)
