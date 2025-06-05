@@ -186,11 +186,33 @@ document.addEventListener("DOMContentLoaded", function () {
   if (document.getElementById("navbar")) loadPartial("navbar", "components/navbar.html");
   if (document.getElementById("footer")) loadPartial("footer", "components/footer.html");
 });
+    const logoutBtn = document.getElementById("logoutBtn");
+    const navbarLogout = document.getElementById("navbarLogout");
 
-function loadPartial(id, file) {
-  fetch(file)
-    .then(res => res.text())
-    .then(html => document.getElementById(id).innerHTML = html);
+    if (logoutBtn) logoutBtn.addEventListener("click", logoutUser);
+    if (navbarLogout) navbarLogout.addEventListener("click", logoutUser);
+
+    function loadPartial(id, file) {
+      fetch(file)
+        .then(res => res.text())
+        .then(html => document.getElementById(id).innerHTML = html);
+
+    const authBtn = document.getElementById("authBtn");
+    if (authBtn) {
+      const token = localStorage.getItem("token");
+      if (token) {
+        authBtn.textContent = "Logout";
+        authBtn.onclick = () => {
+          localStorage.removeItem("token");
+          localStorage.removeItem("role");
+          window.location.href = "login.html";
+        };
+      } else {
+        authBtn.textContent = "Login";
+        authBtn.onclick = () => window.location.href = "login.html";
+      }
+    }
+
 }
 
 const registerForm = document.getElementById("registerForm");
@@ -333,4 +355,10 @@ if (fileInput && uploadBtn && messageBox) {
     };
     reader.readAsText(file);
   });
+}
+
+function logoutUser() {
+  localStorage.removeItem("token");
+  localStorage.removeItem("role");
+  window.location.href = "login.html";
 }
