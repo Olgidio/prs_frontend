@@ -271,13 +271,14 @@ if (loginForm) {
     const data = await res.json();
     console.log("Login response:", data);
 
-    if (data.token && data.role) {
-      localStorage.setItem("token", data.token);
-      localStorage.setItem("role", data.role);
+    if (data.body && data.body.token && data.body.role) {
+      localStorage.setItem("token", data.body.token);
+      localStorage.setItem("role", data.body.role);
       window.location.href = "user-profile.html";
     } else {
-      alert(data.error || "Login failed");
+      alert(data.message || "Login failed");
     }
+
   });
 }
 
