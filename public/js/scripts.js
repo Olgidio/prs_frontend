@@ -158,6 +158,17 @@ if (searchBtn) {
 }
 
 document.addEventListener("DOMContentLoaded", function () {
+    const token = localStorage.getItem("token");
+
+  //Check for login on protected pages like upload-vaccine.html
+  const protectedPages = ["upload-vaccine.html"];
+  const currentPage = window.location.pathname.split("/").pop();
+
+  if (protectedPages.includes(currentPage) && !token) {
+    alert("You must be logged in to upload vaccination records.");
+    window.location.href = "login.html";
+    return;
+  }
   const roleLabel = document.getElementById("roleLabel");
   const dashboardRedirect = document.getElementById("dashboardRedirect");
 
