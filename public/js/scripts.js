@@ -173,14 +173,14 @@ document.addEventListener("DOMContentLoaded", function () {
 
     // If logged in, set role and redirect button
     roleLabel.textContent = `Role: ${role.charAt(0).toUpperCase() + role.slice(1)}`;
-    dashboardRedirect.onclick = () => window.location.href = `${role}-dashboard.html`;
+    dashboardRedirect.onclick = () => window.location.href = `${role.toLowerCase()}-dashboard.html`;
   }
 
 
-  if (document.title.includes("Public Dashboard")) loadPublicDashboard();
-  if (document.title.includes("Merchant Dashboard")) loadMerchantDashboard();
-  if (document.title.includes("Government Dashboard")) loadGovDashboard();
-  if (document.title.includes("Admin Reports")) loadAuditLogs();
+  if (document.title.toLowerCase().includes("public dashboard")) loadPublicDashboard();
+  if (document.title.toLowerCase().includes("merchant Dashboard")) loadMerchantDashboard();
+  if (document.title.toLowerCase().includes("government Dashboard")) loadGovDashboard();
+  if (document.title.toLowerCase().includes("admin Reports")) loadAuditLogs();
 
   // Load navbar and footer if present
   if (document.getElementById("navbar")) loadPartial("navbar", "components/navbar.html");
@@ -215,7 +215,7 @@ if (registerForm) {
       alert("Please select a role.");
       return;
       }
-
+    const desired_role = document.getElementById("desired_role").value;
     const body = {
       first_name,
       middle_name,
@@ -274,10 +274,18 @@ if (loginForm) {
     if (data.body && data.body.token && data.body.role) {
       localStorage.setItem("token", data.body.token);
       localStorage.setItem("role", data.body.role);
-      window.location.href = "user-profile.html";
-    } else {
-      alert(data.message || "Login failed");
+
+      const role = data.body.role.toLowerCase();
+      const dashboardMap = {
+        public: "public-dashboard.html",
+        merchant: "merchant-dashboard.html",
+        government: "government-dashboard.html"
+      };
+
+      const target = dashboardMap[role] || "public-dashboard.html";
+      window.location.href = target;
     }
+
 
   });
 }
@@ -306,7 +314,10 @@ if (fileInput && uploadBtn && messageBox) {
         const content = JSON.parse(reader.result);
         const res = await fetch(`${BACKEND_URL}/api/vaccinations/upload`, {
           method: 'POST',
-          headers,
+          headers: {
+              'Authorization': `Bearer ${token}`,
+              'Content-Type': 'application/json'
+                  },
           body: JSON.stringify(content)
         });
 
