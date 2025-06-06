@@ -222,14 +222,15 @@ function loadPartial(id, file) {
 }
   
 
-  const loginForm = document.getElementById("loginForm");
-  if (loginForm) {
-    loginForm.addEventListener("submit", async function (e) {
-      e.preventDefault();
+const loginForm = document.getElementById("loginForm");
+if (loginForm) {
+  loginForm.addEventListener("submit", async function (e) {
+    e.preventDefault();
 
-      const email = document.getElementById("email").value;
-      const password = document.getElementById("password").value;
+    const email = document.getElementById("email").value;
+    const password = document.getElementById("password").value;
 
+    try {
       const response = await fetch('https://api.prs-api.xyz/api/auth/login', {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
@@ -237,16 +238,24 @@ function loadPartial(id, file) {
       });
 
       const data = await response.json();
+      console.log("Login response:", data); // Debug log
 
-      if (response.ok && data.token && data.role) {
-        localStorage.setItem('token', data.token);
-        localStorage.setItem('role', data.role);
-        window.location.href = 'user-profile.html';
+      if (response.ok && data.data && data.data.token && data.data.role) {
+        // Store the token and role
+        localStorage.setItem('token', data.data.token);
+        localStorage.setItem('role', data.data.role);
+        
+        // Redirect directly to the appropriate dashboard
+        redirectToDashboard(data.data.role);
       } else {
         alert(data.message || "Login failed");
       }
-    });
-  }
+    } catch (error) {
+      console.error("Login error:", error);
+      alert("Login failed. Please try again.");
+    }
+  });
+}
 
 
 const registerForm = document.getElementById("registerForm");
