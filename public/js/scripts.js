@@ -418,3 +418,108 @@ if (registerForm) {
     }
   });
 }
+
+async function prefillProfileForm() {
+  try {
+    const res = await fetch(`${BACKEND_URL}/api/profile`, { headers: getAuthHeaders() });
+    if (!res.ok) return;
+    const data = await res.json();
+    const user = data.body;
+
+    document.getElementById("first_name").value = user.first_name || "";
+    document.getElementById("middle_name").value = user.middle_name || "";
+    document.getElementById("last_name").value = user.last_name || "";
+    document.getElementById("mobile_phone").value = user.mobile_phone || "";
+    document.getElementById("home_phone").value = user.home_phone || "";
+    document.getElementById("work_phone").value = user.work_phone || "";
+    document.getElementById("home_address").value = user.home_address || "";
+  } catch (err) {
+    console.error("Failed to prefill profile:", err);
+  }
+}
+
+async function handleProfileFormSubmit(e) {
+  e.preventDefault();
+  const messageDiv = document.getElementById("profileMessage");
+  const body = {
+    first_name: document.getElementById("first_name").value,
+    middle_name: document.getElementById("middle_name").value,
+    last_name: document.getElementById("last_name").value,
+    mobile_phone: document.getElementById("mobile_phone").value,
+    home_phone: document.getElementById("home_phone").value,
+    work_phone: document.getElementById("work_phone").value,
+    home_address: document.getElementById("home_address").value
+  };
+
+  try {
+    const res = await fetch(`${BACKEND_URL}/api/profile/update`, {
+      method: "POST",
+      headers: getAuthHeaders(),
+      body: JSON.stringify(body)
+    });
+
+    const result = await res.json();
+    if (res.ok) {
+      messageDiv.innerHTML = '<p style="color: green;">Profile updated successfully!</p>';
+    } else {
+      messageDiv.innerHTML = `<p style="color: red;">Update failed: ${result.message}</p>`;
+    }
+  } catch (err) {
+    console.error("Profile update error:", err);
+    messageDiv.innerHTML = '<p style="color: red;">Server error while updating profile.</p>';
+  }
+}
+
+async function prefillIdentifiersForm() {
+  try {
+    const res = await fetch(`${BACKEND_URL}/api/profile/identifiers`, { headers: getAuthHeaders() });
+    if (!res.ok) return;
+    const data = await res.json();
+    const id = data.body;
+
+    document.getElementById("dob").value = id.dob || "";
+    document.getElementById("passport_num").value = id.passport_num || "";
+    document.getElementById("national_insurance_number").value = id.national_insurance_number || "";
+    document.getElementById("drivers_licence_number").value = id.drivers_licence_number || "";
+    document.getElementById("nhs_number").value = id.nhs_number || "";
+  } catch (err) {
+    console.error("Failed to prefill identifiers:", err);
+  }
+}
+
+async function handleIdentifiersFormSubmit(e) {
+  e.preventDefault();
+  const messageDiv = document.getElementById("profileMessage");
+  const body = {
+    dob: document.getElementById("dob").value,
+    passport_num: document.getElementById("passport_num").value,
+    national_insurance_number: document.getElementById("national_insurance_number").value,
+    drivers_licence_number: document.getElementById("drivers_licence_number").value,
+    nhs_number: document.getElementById("nhs_number").value
+  };
+
+  try {
+    const res = await fetch(`${BACKEND_URL}/api/profile/identifiers`, {
+      method: "POST",
+      headers: getAuthHeaders(),
+      body: JSON.stringify(body)
+    });
+    const result = await res.json();
+    if (res.ok) {
+      messageDiv.innerHTML = '<p style="color: green;">Identifiers updated successfully!</p>';
+    } else {
+      messageDiv.innerHTML = `<p style="color: red;">Update failed: ${result.message}</p>`;
+    }
+  } catch (err) {
+    console.error("Identifiers update error:", err);
+    messageDiv.innerHTML = '<p style="color: red;">Server error while updating identifiers.</p>';
+  }
+}
+
+// Activate profile form handlers on DOM load
+if (document.getElementById("profileForm")) {
+  prefillProfileForm();
+  prefillIdentifiersForm();
+  document.getElementById("profileForm").addEventListener("submit", handleProfileFormSubmit);
+  document.getElementById("identifiersForm").addEventListener("submit", handleIdentifiersFormSubmit);
+}
