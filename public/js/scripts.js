@@ -11,7 +11,8 @@ async function mockFetch(endpoint) {
     '/api/merchants': '/mock/merchants.json',
     '/api/officials': '/mock/officials.json',
     '/api/orders': '/mock/orders.json',
-    '/api/order-items': '/mock/order_items.json'
+    '/api/order-items': '/mock/order_items.json',
+    '/api/vaccinations/summary/public': '/mock/vaccinations_public.json',
   };
 
   const file = mapping[endpoint];
@@ -53,9 +54,10 @@ function redirectToDashboard(role) {
 async function loadPublicDashboard() {
   try {
     const data = USE_MOCK_DATA
-      ? await mockFetch('/api/vaccinations/summary/public') // add mock file if you have one
+      ? await mockFetch('/api/vaccinations/summary/public')
       : await (await fetch(`${BACKEND_URL}/api/vaccinations/summary/public`, { headers: getAuthHeaders() })).json();
 
+    // The rest remains as you have it:
     const doses = data.map(v => v.dose_number);
     const types = data.map(v => v.vaccine_name);
     const dates = data.map(v => new Date(v.date_administered).toLocaleDateString());

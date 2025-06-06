@@ -1,0 +1,20 @@
+[
+  {
+    "prs_id": "8f78fbfa-d91d-459c-8115-8a20145cfcae",
+    "vaccine_name": "Comirnaty",
+    "dose_number": 1,
+    "date_administered": "2025-05-20T09:00:00Z"
+  },
+  {
+    "prs_id": "8f78fbfa-d91d-459c-8115-8a20145cfcae",
+    "vaccine_name": "Comirnaty",
+    "dose_number": 2,
+    "date_administered": "2025-06-18T09:00:00Z"
+  },
+  {
+    "prs_id": "3f10bf7b-ec12-4edc-bf11-43fbbd667ef1",
+    "vaccine_name": "Spikevax",
+    "dose_number": 1,
+    "date_administered": "2025-05-25T10:00:00Z"
+  }
+]
