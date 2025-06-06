@@ -1,0 +1,18 @@
+[
+  {
+    "item_type": "PPE",
+    "item_subtype": "Mask",
+    "quantity": 150,
+    "unit": "units",
+    "location_name": "East Clinic",
+    "store_name": "HealthPlus"
+  },
+  {
+    "item_type": "Test Kit",
+    "item_subtype": "PCR",
+    "quantity": 90,
+    "unit": "kits",
+    "location_name": "Downtown Hospital",
+    "store_name": "SafeMed Supplies"
+  }
+]

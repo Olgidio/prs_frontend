@@ -1,0 +1,12 @@
+[
+  {
+    "name": "Dr. Jane Gov",
+    "department": "Health",
+    "clearance_level": 4
+  },
+  {
+    "name": "Mr. Alex Bureau",
+    "department": "Logistics",
+    "clearance_level": 3
+  }
+]

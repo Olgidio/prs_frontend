@@ -1,0 +1,12 @@
+[
+  {
+    "location_name": "East Clinic",
+    "location_type": "clinic",
+    "city": "DemoCity"
+  },
+  {
+    "location_name": "Downtown Hospital",
+    "location_type": "hospital",
+    "city": "DemoCity"
+  }
+]

@@ -1,3 +1,25 @@
+const USE_MOCK_DATA = true;
+
+async function mockFetch(endpoint) {
+  const mapping = {
+    '/api/audit/logs': 'mock/audit_logs.json',
+    '/api/inventory/summary': 'mock/inventory.json',
+    '/api/gov/dashboard-summary': 'mock/orders.json',
+    '/api/items': 'mock/items.json',
+    '/api/locations': 'mock/locations.json',
+    '/api/merchants': 'mock/merchants.json',
+    '/api/officials': 'mock/officials.json',
+    '/api/orders': 'mock/orders.json',
+    '/api/order-items': 'mock/order_items.json'
+  };
+
+  const file = mapping[endpoint];
+  if (!file) throw new Error("No mock mapping for endpoint: " + endpoint);
+
+  const res = await fetch(file);
+  return res.json();
+}
+
 const BACKEND_URL = 'https://api.prs-api.xyz';
 
 function getAuthHeaders() {
@@ -162,7 +184,11 @@ document.addEventListener("DOMContentLoaded", function () {
   const protectedPages = ["upload-vaccine.html"];
   const currentPage = window.location.pathname.split("/").pop();
   const token = localStorage.getItem("token");
-
+  const roleLabel = document.getElementById("roleLabel");
+  const storedRole = localStorage.getItem("role");
+  if (roleLabel && storedRole) {
+    roleLabel.textContent = `Role: ${storedRole}`;
+  }
   if (protectedPages.includes(currentPage) && !token) {
     alert("You must be logged in to upload vaccination records.");
     window.location.href = "login.html";
@@ -258,6 +284,7 @@ async function handleVaccineUpload() {
         vaccination_json: vaccinationData
       })
     });
+
 
     const result = await response.json();
 

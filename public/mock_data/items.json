@@ -1,0 +1,12 @@
+[
+  {
+    "item_type": "PPE",
+    "item_subtype": "Mask",
+    "description": "Disposable N95 mask"
+  },
+  {
+    "item_type": "Test Kit",
+    "item_subtype": "PCR",
+    "description": "PCR COVID test kit"
+  }
+]
