@@ -57,12 +57,12 @@ async function loadPublicDashboard() {
     const data = USE_MOCK_DATA
       ? await mockFetch('/api/vaccinations/summary/public')
       : await (await fetch(`${BACKEND_URL}/api/vaccinations/summary/public`, { headers: getAuthHeaders() })).json();
-    console.log("Fetched dashboard data:", data);
+    
     // The rest remains as you have it:
     const doses = data.map(v => v.dose_number);
     const types = data.map(v => v.vaccine_name);
     const dates = data.map(v => new Date(v.date_administered).toLocaleDateString());
-
+console.log("Fetched dashboard data:", data);
     const typeCounts = types.reduce((acc, type) => {
       acc[type] = (acc[type] || 0) + 1;
       return acc;
