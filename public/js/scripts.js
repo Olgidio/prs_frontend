@@ -162,7 +162,11 @@ document.addEventListener("DOMContentLoaded", function () {
   const protectedPages = ["upload-vaccine.html"];
   const currentPage = window.location.pathname.split("/").pop();
   const token = localStorage.getItem("token");
-
+  const roleLabel = document.getElementById("roleLabel");
+  const storedRole = localStorage.getItem("role");
+  if (roleLabel && storedRole) {
+    roleLabel.textContent = `Role: ${storedRole}`;
+  }
   if (protectedPages.includes(currentPage) && !token) {
     alert("You must be logged in to upload vaccination records.");
     window.location.href = "login.html";
@@ -258,6 +262,7 @@ async function handleVaccineUpload() {
         vaccination_json: vaccinationData
       })
     });
+
 
     const result = await response.json();
 
