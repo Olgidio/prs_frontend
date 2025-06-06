@@ -156,6 +156,8 @@ async function loadAuditLogs() {
   });
 }
 
+// Add this to your scripts.js file - Upload Vaccine Functionality
+
 document.addEventListener("DOMContentLoaded", function () {
   const protectedPages = ["upload-vaccine.html"];
   const currentPage = window.location.pathname.split("/").pop();
@@ -167,9 +169,16 @@ document.addEventListener("DOMContentLoaded", function () {
     return;
   }
 
-  if (document.title.toLowerCase().includes("public dashboard")) loadPublicDashboard();
-  if (document.title.toLowerCase().includes("merchant dashboard")) loadMerchantDashboard();
-  if (document.title.toLowerCase().includes("government dashboard")) loadGovDashboard();
+  // Only load dashboards for dashboard pages, not upload pages
+  if (document.title.toLowerCase().includes("public dashboard") && !currentPage.includes("upload")) {
+    loadPublicDashboard();
+  }
+  if (document.title.toLowerCase().includes("merchant dashboard") && !currentPage.includes("upload")) {
+    loadMerchantDashboard();
+  }
+  if (document.title.toLowerCase().includes("government dashboard") && !currentPage.includes("upload")) {
+    loadGovDashboard();
+  }
   if (document.title.toLowerCase().includes("admin reports")) loadAuditLogs();
 
   if (document.getElementById("navbar")) loadPartial("navbar", "components/navbar.html");
@@ -178,6 +187,12 @@ document.addEventListener("DOMContentLoaded", function () {
   if (currentPage === "user-profile.html") {
     const role = localStorage.getItem("role");
     redirectToDashboard(role);
+  }
+
+  // Handle upload vaccine functionality
+  const uploadVaccineBtn = document.getElementById("uploadVaccineBtn");
+  if (uploadVaccineBtn) {
+    uploadVaccineBtn.addEventListener("click", handleVaccineUpload);
   }
 
   const logoutBtn = document.getElementById("logoutBtn");
@@ -198,6 +213,77 @@ document.addEventListener("DOMContentLoaded", function () {
   }
 });
 
+// Upload Vaccine Handler Function
+async function handleVaccineUpload() {
+  const fileInput = document.getElementById("vaccineFile");
+  const messageDiv = document.getElementById("uploadMessage");
+  
+  if (!fileInput.files || fileInput.files.length === 0) {
+    messageDiv.innerHTML = '<p style="color: red;">Please select a JSON file to upload.</p>';
+    return;
+  }
+
+  const file = fileInput.files[0];
+  
+  // Check if it's a JSON file
+  if (!file.name.toLowerCase().endsWith('.json')) {
+    messageDiv.innerHTML = '<p style="color: red;">Please select a valid JSON file.</p>';
+    return;
+  }
+
+  try {
+    // Read the file content
+    const fileContent = await readFileAsText(file);
+    
+    // Try to parse as JSON to validate
+    let vaccinationData;
+    try {
+      vaccinationData = JSON.parse(fileContent);
+    } catch (parseError) {
+      messageDiv.innerHTML = '<p style="color: red;">Invalid JSON file. Please check the file format.</p>';
+      return;
+    }
+
+    // Show loading message
+    messageDiv.innerHTML = '<p style="color: blue;">Uploading vaccination record...</p>';
+
+    // Send to backend
+    const response = await fetch(`${BACKEND_URL}/api/vaccinations/upload`, {
+      method: 'POST',
+      headers: {
+        'Authorization': `Bearer ${localStorage.getItem("token")}`,
+        'Content-Type': 'application/json'
+      },
+      body: JSON.stringify({
+        vaccination_json: vaccinationData
+      })
+    });
+
+    const result = await response.json();
+
+    if (response.ok) {
+      messageDiv.innerHTML = '<p style="color: green;">Vaccination record uploaded successfully!</p>';
+      // Clear the file input
+      fileInput.value = '';
+    } else {
+      messageDiv.innerHTML = `<p style="color: red;">Upload failed: ${result.message || 'Unknown error'}</p>`;
+    }
+
+  } catch (error) {
+    console.error('Upload error:', error);
+    messageDiv.innerHTML = '<p style="color: red;">Upload failed. Please try again.</p>';
+  }
+}
+
+// Helper function to read file as text
+function readFileAsText(file) {
+  return new Promise((resolve, reject) => {
+    const reader = new FileReader();
+    reader.onload = (e) => resolve(e.target.result);
+    reader.onerror = (e) => reject(e);
+    reader.readAsText(file);
+  });
+}
 function loadPartial(id, file) {
   fetch(file)
     .then(res => res.text())
@@ -221,6 +307,14 @@ function loadPartial(id, file) {
     });
 }
   
+function readFileAsText(file) {
+  return new Promise((resolve, reject) => {
+    const reader = new FileReader();
+    reader.onload = (e) => resolve(e.target.result);
+    reader.onerror = (e) => reject(e);
+    reader.readAsText(file);
+  });
+}
 
 // Fixed login form handler
 const loginForm = document.getElementById("loginForm");
