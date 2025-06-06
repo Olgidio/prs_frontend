@@ -356,6 +356,17 @@ if (loginForm) {
     }
   });
 }
+const desiredRole = document.getElementById("desired_role");
+const govOtpDiv = document.getElementById("govOtpDiv");
+
+desiredRole.addEventListener("change", function() {
+  if (this.value === "Government Official") {
+    govOtpDiv.style.display = "block";
+  } else {
+    govOtpDiv.style.display = "none";
+    document.getElementById("gov_otp").value = ""; // Clear it if not gov
+  }
+});
 
 
 const registerForm = document.getElementById("registerForm");
@@ -372,6 +383,8 @@ if (registerForm) {
     const confirm_password = document.getElementById("confirm_password").value;
     const home_address = document.getElementById("home_address").value.trim();
     const desired_role = document.getElementById("desired_role").value;
+    const gov_otp = document.getElementById("gov_otp") ? document.getElementById("gov_otp").value.trim() : "";
+
 
     if (password !== confirm_password) {
       alert("Passwords do not match.");
@@ -396,7 +409,7 @@ if (registerForm) {
       store_name: "",
       address: "",
       region: "",
-      gov_otp: ""       // Optional for government
+      gov_otp
     };
 
     try {
