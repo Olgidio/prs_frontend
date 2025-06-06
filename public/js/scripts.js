@@ -1,4 +1,25 @@
 const BACKEND_URL = 'https://api.prs-api.xyz';
+const USE_MOCK_DATA = true;
+
+async function mockFetch(endpoint) {
+  const mapping = {
+    '/api/audit/logs': '/mock/audit_logs.json',
+    '/api/inventory/summary': '/mock/inventory.json',
+    '/api/gov/dashboard-summary': '/mock/orders.json',
+    '/api/items': '/mock/items.json',
+    '/api/locations': '/mock/locations.json',
+    '/api/merchants': '/mock/merchants.json',
+    '/api/officials': '/mock/officials.json',
+    '/api/orders': '/mock/orders.json',
+    '/api/order-items': '/mock/order_items.json'
+  };
+
+  const file = mapping[endpoint];
+  if (!file) throw new Error("No mock mapping for endpoint: " + endpoint);
+
+  const res = await fetch(file);
+  return res.json();
+}
 
 function getAuthHeaders() {
   return {
@@ -31,10 +52,9 @@ function redirectToDashboard(role) {
 
 async function loadPublicDashboard() {
   try {
-    const res = await fetch(`${BACKEND_URL}/api/vaccinations/summary/public`, {
-      headers: getAuthHeaders()
-    });
-    const data = await res.json();
+    const data = USE_MOCK_DATA
+      ? await mockFetch('/api/vaccinations/summary/public') // add mock file if you have one
+      : await (await fetch(`${BACKEND_URL}/api/vaccinations/summary/public`, { headers: getAuthHeaders() })).json();
 
     const doses = data.map(v => v.dose_number);
     const types = data.map(v => v.vaccine_name);
@@ -90,73 +110,85 @@ async function loadPublicDashboard() {
       `<p style="color:red">Error loading vaccination data. Please try again later.</p>`);
   }
 }
-async function loadMerchantDashboard() {
-  const res = await fetch(`${BACKEND_URL}/api/inventory/summary`, {
-    headers: getAuthHeaders()
-  });
-  const data = await res.json();
-  const labels = data.map(i => `${i.item_type} - ${i.item_subtype}`);
-  const quantities = data.map(i => i.quantity);
 
-  new Chart(document.getElementById('barChart'), {
-    type: 'bar',
-    data: {
-      labels: labels,
-      datasets: [{ label: 'Quantity in Stock', data: quantities }]
-    }
-  });
+async function loadMerchantDashboard() {
+  try {
+    const data = USE_MOCK_DATA
+      ? await mockFetch('/api/inventory/summary')
+      : await (await fetch(`${BACKEND_URL}/api/inventory/summary`, { headers: getAuthHeaders() })).json();
+
+    const labels = data.map(i => `${i.item_type} - ${i.item_subtype}`);
+    const quantities = data.map(i => i.quantity);
+
+    new Chart(document.getElementById('barChart'), {
+      type: 'bar',
+      data: {
+        labels: labels,
+        datasets: [{ label: 'Quantity in Stock', data: quantities }]
+      }
+    });
+  } catch (error) {
+    console.error("Error loading merchant dashboard:", error);
+  }
 }
 
 async function loadGovDashboard() {
-  const res = await fetch(`${BACKEND_URL}/api/gov/dashboard-summary`, {
-    headers: getAuthHeaders()
-  });
-  const stats = await res.json();
+  try {
+    const stats = USE_MOCK_DATA
+      ? await mockFetch('/api/gov/dashboard-summary')
+      : await (await fetch(`${BACKEND_URL}/api/gov/dashboard-summary`, { headers: getAuthHeaders() })).json();
 
-  new Chart(document.getElementById('barChart'), {
-    type: 'bar',
-    data: {
-      labels: stats.labels,
-      datasets: [{ label: 'Total Vaccinations', data: stats.vaccinations }]
-    }
-  });
+    new Chart(document.getElementById('barChart'), {
+      type: 'bar',
+      data: {
+        labels: stats.labels,
+        datasets: [{ label: 'Total Vaccinations', data: stats.vaccinations }]
+      }
+    });
 
-  new Chart(document.getElementById('pieChart'), {
-    type: 'pie',
-    data: {
-      labels: stats.vaccineTypes,
-      datasets: [{ data: stats.vaccineCounts }]
-    }
-  });
+    new Chart(document.getElementById('pieChart'), {
+      type: 'pie',
+      data: {
+        labels: stats.vaccineTypes,
+        datasets: [{ data: stats.vaccineCounts }]
+      }
+    });
 
-  new Chart(document.getElementById('lineChart'), {
-    type: 'line',
-    data: {
-      labels: stats.months,
-      datasets: [{ label: 'Monthly Trends', data: stats.trend }]
-    }
-  });
+    new Chart(document.getElementById('lineChart'), {
+      type: 'line',
+      data: {
+        labels: stats.months,
+        datasets: [{ label: 'Monthly Trends', data: stats.trend }]
+      }
+    });
+  } catch (error) {
+    console.error("Error loading government dashboard:", error);
+  }
 }
+
 async function loadAuditLogs() {
-  const res = await fetch(`${BACKEND_URL}/api/audit/logs`, {
-    headers: getAuthHeaders()
-  });
-  const logs = await res.json();
-  const tableBody = document.getElementById("reportTableBody");
-  tableBody.innerHTML = '';
+  try {
+    const logs = USE_MOCK_DATA
+      ? await mockFetch('/api/audit/logs')
+      : await (await fetch(`${BACKEND_URL}/api/audit/logs`, { headers: getAuthHeaders() })).json();
 
-  logs.forEach(log => {
-    const row = document.createElement("tr");
-    row.innerHTML = `
-      <td>${log.user_email}</td>
-      <td>${log.role}</td>
-      <td>${log.action}</td>
-      <td>${new Date(log.timestamp).toLocaleString()}</td>`;
-    tableBody.appendChild(row);
-  });
+    const tableBody = document.getElementById("reportTableBody");
+    tableBody.innerHTML = '';
+
+    logs.forEach(log => {
+      const row = document.createElement("tr");
+      row.innerHTML = `
+        <td>${log.user_email}</td>
+        <td>${log.role}</td>
+        <td>${log.action}</td>
+        <td>${new Date(log.timestamp).toLocaleString()}</td>`;
+      tableBody.appendChild(row);
+    });
+  } catch (error) {
+    console.error("Error loading audit logs:", error);
+  }
 }
 
-// Add this to your scripts.js file - Upload Vaccine Functionality
 
 document.addEventListener("DOMContentLoaded", function () {
   const protectedPages = ["upload-vaccine.html"];
@@ -169,7 +201,6 @@ document.addEventListener("DOMContentLoaded", function () {
     return;
   }
 
-  // Only load dashboards for dashboard pages, not upload pages
   if (document.title.toLowerCase().includes("public dashboard") && !currentPage.includes("upload")) {
     loadPublicDashboard();
   }
@@ -189,7 +220,6 @@ document.addEventListener("DOMContentLoaded", function () {
     redirectToDashboard(role);
   }
 
-  // Handle upload vaccine functionality
   const uploadVaccineBtn = document.getElementById("uploadVaccineBtn");
   if (uploadVaccineBtn) {
     uploadVaccineBtn.addEventListener("click", handleVaccineUpload);
@@ -213,7 +243,6 @@ document.addEventListener("DOMContentLoaded", function () {
   }
 });
 
-// Upload Vaccine Handler Function
 async function handleVaccineUpload() {
   const fileInput = document.getElementById("vaccineFile");
   const messageDiv = document.getElementById("uploadMessage");
@@ -225,17 +254,14 @@ async function handleVaccineUpload() {
 
   const file = fileInput.files[0];
   
-  // Check if it's a JSON file
   if (!file.name.toLowerCase().endsWith('.json')) {
     messageDiv.innerHTML = '<p style="color: red;">Please select a valid JSON file.</p>';
     return;
   }
 
   try {
-    // Read the file content
     const fileContent = await readFileAsText(file);
     
-    // Try to parse as JSON to validate
     let vaccinationData;
     try {
       vaccinationData = JSON.parse(fileContent);
@@ -244,10 +270,8 @@ async function handleVaccineUpload() {
       return;
     }
 
-    // Show loading message
     messageDiv.innerHTML = '<p style="color: blue;">Uploading vaccination record...</p>';
 
-    // Send to backend
     const response = await fetch(`${BACKEND_URL}/api/vaccinations/upload`, {
       method: 'POST',
       headers: {
@@ -275,7 +299,6 @@ async function handleVaccineUpload() {
   }
 }
 
-// Helper function to read file as text
 function readFileAsText(file) {
   return new Promise((resolve, reject) => {
     const reader = new FileReader();
@@ -299,7 +322,6 @@ function loadPartial(id, file) {
         });
       }
 
-      // Re-bind logout
       const logoutBtn = document.getElementById("logoutBtn");
       const navbarLogout = document.getElementById("navbarLogout");
       if (logoutBtn) logoutBtn.addEventListener("click", logoutUser);
@@ -316,7 +338,6 @@ function readFileAsText(file) {
   });
 }
 
-// Fixed login form handler
 const loginForm = document.getElementById("loginForm");
 if (loginForm) {
   loginForm.addEventListener("submit", async function (e) {
@@ -336,11 +357,9 @@ if (loginForm) {
       console.log("Login response:", data); // Debug log
 
       if (response.ok && data.body && data.body.token && data.body.role) {
-        // Store the token and role
         localStorage.setItem('token', data.body.token);
         localStorage.setItem('role', data.body.role);
         
-        // Redirect directly to the appropriate dashboard
         redirectToDashboard(data.body.role);
       } else {
         alert(data.message || "Login failed");
@@ -387,11 +406,11 @@ if (registerForm) {
       mobile_phone,
       home_address,
       desired_role,
-      vat_number: "",   // Optional for merchants
+      vat_number: "",   
       store_name: "",
       address: "",
       region: "",
-      gov_otp: ""       // Optional for government
+      gov_otp: ""      
     };
 
     try {
@@ -516,7 +535,7 @@ async function handleIdentifiersFormSubmit(e) {
   }
 }
 
-// Activate profile form handlers on DOM load
+
 if (document.getElementById("profileForm")) {
   prefillProfileForm();
   prefillIdentifiersForm();
