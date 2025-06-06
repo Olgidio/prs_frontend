@@ -222,6 +222,7 @@ function loadPartial(id, file) {
 }
   
 
+// Fixed login form handler
 const loginForm = document.getElementById("loginForm");
 if (loginForm) {
   loginForm.addEventListener("submit", async function (e) {
@@ -240,13 +241,13 @@ if (loginForm) {
       const data = await response.json();
       console.log("Login response:", data); // Debug log
 
-      if (response.ok && data.data && data.data.token && data.data.role) {
+      if (response.ok && data.body && data.body.token && data.body.role) {
         // Store the token and role
-        localStorage.setItem('token', data.data.token);
-        localStorage.setItem('role', data.data.role);
+        localStorage.setItem('token', data.body.token);
+        localStorage.setItem('role', data.body.role);
         
         // Redirect directly to the appropriate dashboard
-        redirectToDashboard(data.data.role);
+        redirectToDashboard(data.body.role);
       } else {
         alert(data.message || "Login failed");
       }
