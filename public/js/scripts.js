@@ -52,11 +52,12 @@ function redirectToDashboard(role) {
 }
 
 async function loadPublicDashboard() {
+    console.log("loadPublicDashboard called");
   try {
     const data = USE_MOCK_DATA
       ? await mockFetch('/api/vaccinations/summary/public')
       : await (await fetch(`${BACKEND_URL}/api/vaccinations/summary/public`, { headers: getAuthHeaders() })).json();
-
+    console.log("Fetched dashboard data:", data);
     // The rest remains as you have it:
     const doses = data.map(v => v.dose_number);
     const types = data.map(v => v.vaccine_name);
